@@ -1,0 +1,24 @@
+# примеры API-запросов
+
+@port = 7070
+@baseUrl = http://localhost:{{port}}
+
+# получение пользователей
+GET {{baseUrl}}/users
+
+###
+
+# добавление пользователя
+POST {{baseUrl}}/check-nickname/?nickname=asd
+
+###
+
+# добавление пользователя
+POST {{baseUrl}}/check-nickname/?nickname=123
+
+###
+
+# удаление пользователя
+DELETE {{baseUrl}}/check-nickname/asd
+
+###
