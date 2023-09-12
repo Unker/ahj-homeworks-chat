@@ -4,6 +4,7 @@ const koaBody = require('koa-body');
 const WS = require('ws');
 
 const router = require('./routes');
+const { chatUsers, chatHistory } = require('./db');
 
 const app = new Koa();
 
@@ -43,8 +44,6 @@ app.use(async (ctx, next) => {
   }
 });
 
-//TODO: write code here
-
 app.use(router());
 
 const port = process.env.PORT || 7070;
@@ -54,20 +53,21 @@ const wsServer = new WS.Server({
   server
 });
 
-const chat = ['welcome to our chat'];
-
 wsServer.on('connection', (ws) => {
-  ws.on('message', (message) => {
-    chat.push(message);
+  console.log('connected')
+  ws.on('message', (data) => {
+    const { nickName, message } = data;
+    chatHistory.add(nickName, message);
 
-    const eventData = JSON.stringify({ chat: [message] });
+    const eventData = JSON.stringify({ lastMsg: message.slice(-1) });
 
     Array.from(wsServer.clients)
       .filter(client => client.readyState === WS.OPEN)
       .forEach(client => client.send(eventData));
   });
 
-    ws.send(JSON.stringify({ chat }));
+  // отправка всех сообщений
+  ws.send(JSON.stringify([...chatHistory.messages]));
 });
 
 server.listen(port, () => {

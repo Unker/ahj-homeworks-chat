@@ -8,6 +8,11 @@ GET {{baseUrl}}/users
 
 ###
 
+# получение истории чата (для теста)
+GET {{baseUrl}}/chat
+
+###
+
 # добавление пользователя
 POST {{baseUrl}}/check-nickname/?nickname=asd
 

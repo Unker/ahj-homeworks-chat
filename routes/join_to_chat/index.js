@@ -1,31 +1,9 @@
 const Router = require('koa-router');
 const koaBody = require('koa-body');
 
-const chatHistory = require('../../db');
+const { chatUsers } = require('../../db');
 
 const router = new Router();
-
-// router.post('/check-nickname', (ctx) => {
-//   console.log(typeof ctx.request.body);
-//   console.log(ctx.request.body);
-
-//   ctx.response.body = 'subscriptions';
-
-//   const { name, phone } = ctx.request.body;
-
-//   ctx.response.set('Access-Control-Allow-Origin', '*');
-
-//   if (subscription.data.some(sub => sub.phone === phone)) {
-//     ctx.response.status = 400;
-//     ctx.response.body = { status: "subscriprion exists" };
-
-//     return;
-//   }
-
-//   subscriptions.add({ name, phone });
-
-//   ctx.response.body = { status: "OK" };
-// });
 
 router.post('/check-nickname', koaBody({
   urlencoded: true,
@@ -40,7 +18,7 @@ router.post('/check-nickname', koaBody({
     };
     return;
   } else {
-    if (chatHistory.users.has(nickname)) {
+    if (chatUsers.users.has(nickname)) {
       ctx.status = 400;
       ctx.body = {
         message: `The name \'${nickname}\' already exists`,
@@ -48,7 +26,7 @@ router.post('/check-nickname', koaBody({
       };
       return;
     } else {
-      chatHistory.addUser(nickname);
+      chatUsers.add(nickname);
       ctx.body = JSON.stringify({
         nickname,
         available: true,
@@ -63,14 +41,14 @@ router.delete('/check-nickname/:nickname', (ctx) => {
 
   ctx.response.set('Access-Control-Allow-Origin', '*');
 
-  if (!chatHistory.users.has(nickname)) {
+  if (!chatUsers.users.has(nickname)) {
     ctx.response.status = 400;
     ctx.response.body = { status: "user doesn\'t exists" };
 
     return;
   }
 
-  chatHistory.removeUser(nickname);
+  chatUsers.remove(nickname);
 
   ctx.response.body = { status: "OK" };
 });

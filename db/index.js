@@ -1,22 +1,18 @@
-const chatHistory = {
-  users: new Set(),
-  messages: [{
-    time: 0,
-    user: '',
-    message: '',
-  },],
+const chatUsers = {
+  users: new Set(['testUser']),
   listeners: [],
   
-  addUser(user) {
+  add(user) {  
     this.users.add(user);
     
-    this.listeners.forEach(handler => handler(item));
+    // this.listeners.forEach(handler => handler(user, true));
+    this.listeners.forEach(handler => handler(this.users));
   },
 
-  removeUser(user) {
+  remove(user) {
     this.users.delete(user);
     
-    this.listeners.forEach(handler => handler(item));
+    this.listeners.forEach(handler => handler(this.users));
   },
   
   listen(handler) {
@@ -24,4 +20,38 @@ const chatHistory = {
   },
 }
 
-module.exports = chatHistory;
+const chatHistory = {
+  messages: [
+    {
+      time: 123,
+      user: 'un',
+      message: 'qqqqq',
+    },
+    {
+      time: 123333,
+      user: '111',
+      message: 'zxc',
+    },
+  ],
+  listeners: [],
+  
+  add(user, message) {
+    const d = new Date();
+    const n = d.toLocaleTimeString();
+    const item = {
+      time: n,
+      user,
+      message,
+    };
+    this.messages.append(item);
+    
+    this.listeners.forEach(handler => handler(item));
+  },
+  
+  listen(handler) {
+    this.listeners.push(handler);
+  },
+  
+}
+
+module.exports = { chatUsers, chatHistory };
