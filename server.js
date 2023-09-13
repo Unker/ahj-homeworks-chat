@@ -56,10 +56,12 @@ const wsServer = new WS.Server({
 wsServer.on('connection', (ws) => {
   console.log('connected')
   ws.on('message', (data) => {
-    const { nickName, message } = data;
+    const { nickName, message } = JSON.parse(data);
+    console.log('ws message json:', JSON.parse(data));
+
     chatHistory.add(nickName, message);
 
-    const eventData = JSON.stringify({ lastMsg: message.slice(-1) });
+    const eventData = JSON.stringify(chatHistory.messages.slice(-1));
 
     Array.from(wsServer.clients)
       .filter(client => client.readyState === WS.OPEN)
