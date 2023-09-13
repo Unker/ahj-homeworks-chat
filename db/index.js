@@ -1,57 +1,68 @@
 const chatUsers = {
   users: new Set(['testUser']),
   listeners: [],
-  
-  add(user) {  
+
+  add(user) {
     this.users.add(user);
-    
+
     // this.listeners.forEach(handler => handler(user, true));
     this.listeners.forEach(handler => handler(this.users));
   },
 
   remove(user) {
     this.users.delete(user);
-    
+
     this.listeners.forEach(handler => handler(this.users));
   },
-  
+
   listen(handler) {
     this.listeners.push(handler);
   },
 }
 
+function getDate() {
+  const currentDate = new Date();
+
+  const hours = currentDate.getHours().toString().padStart(2, '0');
+  const minutes = currentDate.getMinutes().toString().padStart(2, '0');
+  const day = currentDate.getDate().toString().padStart(2, '0');
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Месяцы начинаются с 0
+  const year = currentDate.getFullYear();
+
+  return `${hours}:${minutes} ${day}:${month}:${year}`;
+
+}
+
 const chatHistory = {
   messages: [
     {
-      time: 123,
-      user: 'un',
-      message: 'qqqqq',
+      time: getDate(),
+      user: 'user1',
+      message: 'test msg',
     },
     {
-      time: 123333,
-      user: '111',
-      message: 'zxc',
+      time: getDate(),
+      user: 'user2',
+      message: 'I am alive',
     },
   ],
   listeners: [],
-  
+
   add(user, message) {
-    const d = new Date();
-    const n = d.toLocaleTimeString();
     const item = {
-      time: n,
+      time: getDate(),
       user,
       message,
     };
-    this.messages.append(item);
-    
+    this.messages.push(item);
+
     this.listeners.forEach(handler => handler(item));
   },
-  
+
   listen(handler) {
     this.listeners.push(handler);
   },
-  
+
 }
 
 module.exports = { chatUsers, chatHistory };
