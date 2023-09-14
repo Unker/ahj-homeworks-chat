@@ -6,6 +6,8 @@ const WS = require('ws');
 const router = require('./routes');
 const { chatUsers, chatHistory } = require('./db');
 
+require('dotenv').config();
+
 const app = new Koa();
 
 app.use(koaBody({
@@ -46,7 +48,7 @@ app.use(async (ctx, next) => {
 
 app.use(router());
 
-const port = process.env.PORT || 7070;
+const port = process.env.SERVER_PORT || 7070;
 const server = http.createServer(app.callback());
 
 const wsServer = new WS.Server({
@@ -75,3 +77,4 @@ wsServer.on('connection', (ws) => {
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+

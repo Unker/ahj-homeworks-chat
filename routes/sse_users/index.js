@@ -17,7 +17,7 @@ router.get('/sseUsers', async (ctx) => {
       chatUsers.listen((items) => {
         console.log(items)
         sse.sendEvent({
-          id: v4(), 
+          id: v4(),
           event: 'updateUser',
           data: JSON.stringify([...items]),
         });
@@ -29,5 +29,15 @@ router.get('/sseUsers', async (ctx) => {
 
   ctx.respond = false;
 });
+
+function findUserBySSE(sse) {
+  // Функция для поиска никнейма пользователя по его SSE соединению
+  for (const user of chatUsers) {
+    if (user.sse === sse) {
+      return user.nickname;
+    }
+  }
+  return null;
+}
 
 module.exports = router;

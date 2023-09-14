@@ -14,7 +14,6 @@ router.post('/check-nickname', koaBody({
     ctx.status = 400;
     ctx.body = {
       message: 'Field \'name\' does not setted',
-      available: false,
     };
     return;
   } else {
