@@ -1,5 +1,7 @@
 # Домашнее задание к занятию "8. EventSource, Websockets"
 
+Frontend: https://github.com/Unker/ahj-homeworks-chat-web.git
+
 Правила сдачи задания:
 
 1. **Важно**: в рамках этого ДЗ можно использовать любой менеджер пакетов
