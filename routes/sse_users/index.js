@@ -6,6 +6,8 @@ const { chatUsers } = require('../../db');
 const router = new Router();
 
 router.get('/sseUsers', async (ctx) => {
+  const { token } = ctx.query;
+  console.log('/sseUsers token',token)
   streamEvents(ctx.req, ctx.res, {
     async fetch(lastEventId) {
       console.log('lastEventId', lastEventId);
@@ -15,7 +17,7 @@ router.get('/sseUsers', async (ctx) => {
 
     async stream(sse) {
       chatUsers.listen((items) => {
-        console.log(items)
+        console.log('/sseUsers JSON', JSON.stringify([...items]))
         sse.sendEvent({
           id: v4(),
           event: 'updateUser',
@@ -23,21 +25,17 @@ router.get('/sseUsers', async (ctx) => {
         });
       });
 
+      ctx.req.on('close', () => {
+        console.log('disconnected', token);
+    
+      })
+
       return () => { };
-    }
+    },
+
   });
 
   ctx.respond = false;
 });
-
-function findUserBySSE(sse) {
-  // Функция для поиска никнейма пользователя по его SSE соединению
-  for (const user of chatUsers) {
-    if (user.sse === sse) {
-      return user.nickname;
-    }
-  }
-  return null;
-}
 
 module.exports = router;

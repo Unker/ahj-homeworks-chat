@@ -56,7 +56,7 @@ const wsServer = new WS.Server({
 });
 
 wsServer.on('connection', (ws) => {
-  console.log('connected')
+  console.log('connected to ws')
   ws.on('message', (data) => {
     const { nickName, message } = JSON.parse(data);
     console.log('ws message json:', JSON.parse(data));

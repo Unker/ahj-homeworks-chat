@@ -1,18 +1,28 @@
 const chatUsers = {
-  users: new Set(['testUser']),
+  users: new Map([
+    [123, 'testUser'],
+  ]),
   listeners: [],
 
-  add(user) {
-    this.users.add(user);
+  add(uuid, user) {
+    this.users.set(uuid, user);
 
-    // this.listeners.forEach(handler => handler(user, true));
-    this.listeners.forEach(handler => handler(this.users));
+    this.listeners.forEach(handler => handler([...chatUsers.users.values()]));
   },
 
-  remove(user) {
-    this.users.delete(user);
+  remove(uuid) {
+    this.users.delete(uuid);
 
-    this.listeners.forEach(handler => handler(this.users));
+    this.listeners.forEach(handler => handler([...chatUsers.users.values()]));
+  },
+
+  isIncludeUser(user) {
+    for (const [key, mapValue] of this.users.entries()) {
+      if (mapValue === user) {
+        return true; // Значение найдено в коллекции
+      }
+    }
+    return false; 
   },
 
   listen(handler) {

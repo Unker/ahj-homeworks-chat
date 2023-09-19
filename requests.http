@@ -1,7 +1,8 @@
 # примеры API-запросов
 
-@port = 7070
+@port = 7000
 @baseUrl = http://localhost:{{port}}
+@token = 3ea487c3-84c4-4854-bea3-6f9d39eaaaf5
 
 # получение пользователей
 GET {{baseUrl}}/users
@@ -22,8 +23,14 @@ POST {{baseUrl}}/check-nickname/?nickname=asd
 POST {{baseUrl}}/check-nickname/?nickname=123
 
 ###
+# удаление пользователя
+DELETE {{baseUrl}}/check-nickname/asd
+
+###
 
 # удаление пользователя
 DELETE {{baseUrl}}/check-nickname/asd
+Content-Type: application/json
+Authorization: Token 4ffff8d9-89b1-4ee9-aa71-eb5ad3aad649
 
 ###

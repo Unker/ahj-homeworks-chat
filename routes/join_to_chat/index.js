@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const koaBody = require('koa-body');
+const { v4 } = require('uuid');
 
 const { chatUsers } = require('../../db');
 
@@ -17,7 +18,7 @@ router.post('/check-nickname', koaBody({
     };
     return;
   } else {
-    if (chatUsers.users.has(nickname)) {
+    if (chatUsers.isIncludeUser(nickname)) {
       ctx.status = 400;
       ctx.body = {
         message: `The name \'${nickname}\' already exists`,
@@ -25,9 +26,11 @@ router.post('/check-nickname', koaBody({
       };
       return;
     } else {
-      chatUsers.add(nickname);
+      const token = v4();
+      chatUsers.add(token, nickname);
       ctx.body = JSON.stringify({
         nickname,
+        token,
         available: true,
       });
       ctx.status = 201;
@@ -37,17 +40,24 @@ router.post('/check-nickname', koaBody({
 
 router.delete('/check-nickname/:nickname', (ctx) => {
   const { nickname } = ctx.params;
+  const authHeader = ctx.request.headers.authorization;
+  if (authHeader) {
+    const [, token] = authHeader.split(' '); // Разбиваем заголовок на части
+    ctx.token = token; // Сохраняем токен в контексте Koa
+  }
 
   ctx.response.set('Access-Control-Allow-Origin', '*');
 
-  if (!chatUsers.users.has(nickname)) {
+  // проверяем корректность токена
+  if (!ctx.token || chatUsers.users.get(ctx.token) !== nickname) {
+
     ctx.response.status = 400;
-    ctx.response.body = { status: "user doesn\'t exists" };
+    ctx.response.body = { status: "user doesn\'t exists or invalid token" };
 
     return;
   }
 
-  chatUsers.remove(nickname);
+  chatUsers.remove(ctx.token);
 
   ctx.response.body = { status: "OK" };
 });
