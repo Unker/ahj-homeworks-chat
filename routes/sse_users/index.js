@@ -8,6 +8,11 @@ const router = new Router();
 router.get('/sseUsers', async (ctx) => {
   const { token } = ctx.query;
   console.log('/sseUsers token',token)
+  if (!token) {
+    ctx.respond = false;
+    return;
+  }
+
   streamEvents(ctx.req, ctx.res, {
     async fetch(lastEventId) {
       console.log('lastEventId', lastEventId);
@@ -27,7 +32,7 @@ router.get('/sseUsers', async (ctx) => {
 
       ctx.req.on('close', () => {
         console.log('disconnected', token);
-    
+        chatUsers.remove(token);
       })
 
       return () => { };
